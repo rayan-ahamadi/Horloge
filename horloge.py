@@ -12,7 +12,6 @@ window.iconbitmap("")
 temps = ""
 isThereAlarm = False
 tempsAlarme = ""
-isHeureManuel = False
 isHeureCreated = False
 
 
@@ -51,10 +50,10 @@ def timeManuel():
 def time(): 
     global isThereAlarm
     global tempsAlarme
-    global isHeureManuel
     global temps
+    global isHeureCreated
 
-    if isHeureManuel == False : 
+    if isHeureCreated == False : 
         temps = datetime.datetime.now().strftime('%H:%M:%S')
         txtAffichage.config(text=temps)
         #vérifie si il y a une alarme et si le temps est égale à l'heure de l'alarme
@@ -63,7 +62,7 @@ def time():
             isThereAlarm = False
         #équivalent de la fonction sleep mais qui appelle la fonction time
         txtAffichage.after(1000,time)
-    elif isHeureManuel and isHeureCreated : 
+    elif isHeureCreated == True : 
         txtAffichage.config(text=temps)
         timeManuel()
         #vérifie si il y a une alarme et si le temps est égale à l'heure de l'alarme
@@ -136,47 +135,35 @@ def alarme():
     btnOk.grid(row=2,column=0,pady=5,padx=5)
     btnAnnuler.grid(row=2,column=1,pady=5,padx=5)
 
-def modeAffichage():
-    formatWindow = Toplevel(window)
-    Label(formatWindow,text="Mode d'affichage",font=("Arial",15)).grid(row=0,column=1,pady=5)
-    frameFormat = Frame(formatWindow)
-    frameFormat.grid(row=1,column=1)
-    btn12heure = Button(frameFormat,text="format 12 heures")
-    btn24heure = Button(frameFormat,text="format 24 heures")
-    btn12heure.grid(row=1,column=0,padx=5,pady=5)
-    btn24heure.grid(row=1,column=1,padx=5,pady=5)
-
 
 def reglage():
-    global isHeureManuel
+
     #Fonctions de la fenêtre
     def configComboBox(var):
-        global isHeureManuel 
+        global isHeureCreated
         if var == 1 : 
             heure.config(state="disabled")
             minutes.config(state="disabled")
             secondes.config(state="disabled")
-            isHeureManuel = False 
+            isHeureCreated = False
         elif var == 2 : 
             heure.config(state="readonly")
             minutes.config(state="readonly")
             secondes.config(state="readonly")
-            isHeureManuel = False
 
     def newTime(): 
             global isHeureCreated
-            global isHeureManuel
             global temps 
 
             isHeureCreated = True
-            isHeureManuel = True
             tupleHeure = (heure.get(),minutes.get(),secondes.get())
             newHeure = tupleHeure[0] + ":" + tupleHeure[1] + ":" + tupleHeure[2] 
             temps = str(newHeure)
             print(temps)
             reglage.destroy()
    
-
+    def annuler(): 
+        reglage.destroy()
 
     ####################################
 
@@ -220,9 +207,9 @@ def reglage():
     radioHeureSysteme = Radiobutton(comboBoxFrame,variable=var,text="Heure du système",value=1,command= lambda : configComboBox(1))
     radioHeureManuel = Radiobutton(comboBoxFrame,variable=var,text="Heure Manuel",value=2,command=lambda : configComboBox(2))
 
-    if isHeureManuel == False : 
+    if isHeureCreated == False : 
         radioHeureSysteme.invoke()
-    else: 
+    elif isHeureCreated == True: 
         radioHeureManuel.invoke()
 
     radioHeureSysteme.grid(row=1,column=0,padx=5)
@@ -234,7 +221,7 @@ def reglage():
     reglageButtonFrame = Frame(reglage)
     reglageButtonFrame.grid(row=2,column=1)
     btnOk = Button(reglageButtonFrame,text="Changer l'heure",command= lambda:newTime())
-    btnAnnuler = Button(reglageButtonFrame,text="Annuler")
+    btnAnnuler = Button(reglageButtonFrame,text="Annuler",command= lambda:annuler())
     btnOk.grid(row=2,column=0,pady=5,padx=5)
     btnAnnuler.grid(row=2,column=1,pady=5,padx=5)
 
@@ -251,9 +238,6 @@ btnAlarme.grid(row=1, column=0,padx=25,pady=10,ipady=10,ipadx=5)
 
 btnReglage = Button(btnFrame,text="Reglage",command=reglage)
 btnReglage.grid(row=1, column=1,padx=25,pady=10,ipady=10,ipadx=5)
-
-btnAffichage = Button(btnFrame, text="Format d'affichage",command=modeAffichage)
-btnAffichage.grid(row=1, column=2,padx=25,pady=10,ipady=10,ipadx=5)
 
 
 window.mainloop()
