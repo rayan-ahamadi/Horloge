@@ -7,7 +7,7 @@ import datetime
 
 window = Tk()
 window.title("Horloge Python")
-window.iconbitmap("")
+window.iconbitmap("icone.ico")
 
 temps = ""
 isThereAlarm = False
@@ -16,7 +16,8 @@ isHeureCreated = False
 
 
 
-#fonction récursive
+#Fonction qui incrémenter les secondes,minutes et heures de la variable temps 
+#à chaque fois qu'elle est appellé
 def timeManuel(): 
     global temps
     timeSplit = temps.split(":")
@@ -46,7 +47,7 @@ def timeManuel():
     timeUpdate = str(heure) + ":" + str(minute) + ":" + str(seconde)
     temps = timeUpdate
 
-
+#fonction récursive
 def time(): 
     global isThereAlarm
     global tempsAlarme
@@ -60,16 +61,14 @@ def time():
         if isThereAlarm == True and tempsAlarme == temps:
             messagebox.showwarning(title="Alarme", message="Il est " + temps)
             isThereAlarm = False
-        #équivalent de la fonction sleep mais qui appelle la fonction time
+        #équivalent de la fonction sleep mais qui re-appelle la fonction time
         txtAffichage.after(1000,time)
     elif isHeureCreated == True : 
         txtAffichage.config(text=temps)
         timeManuel()
-        #vérifie si il y a une alarme et si le temps est égale à l'heure de l'alarme
         if isThereAlarm == True and tempsAlarme == temps:
             messagebox.showwarning(title="Alarme", message="Il est " + temps)
             isThereAlarm = False
-        #équivalent de la fonction sleep mais qui appelle la fonction time
         txtAffichage.after(1000,time)
 
     
@@ -135,10 +134,8 @@ def alarme():
     btnOk.grid(row=2,column=0,pady=5,padx=5)
     btnAnnuler.grid(row=2,column=1,pady=5,padx=5)
 
-
+#Fenêtre réglage
 def reglage():
-
-    #Fonctions de la fenêtre
     def configComboBox(var):
         global isHeureCreated
         if var == 1 : 
@@ -164,9 +161,6 @@ def reglage():
    
     def annuler(): 
         reglage.destroy()
-
-    ####################################
-
 
 
     reglage = Toplevel(window)
@@ -241,4 +235,3 @@ btnReglage.grid(row=1, column=1,padx=25,pady=10,ipady=10,ipadx=5)
 
 
 window.mainloop()
-
